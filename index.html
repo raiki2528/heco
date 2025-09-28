@@ -300,14 +300,8 @@
                 alert('URLをコピーしました！');
               }
             } catch (err) {
-              console.log('Share failed:', err);
-              // Fallback: copy to clipboard
-              try {
-                await navigator.clipboard.writeText(window.location.href);
-                alert('URLをコピーしました！');
-              } catch (clipboardErr) {
-                alert('共有に失敗しました。URLを手動でコピーしてください: ' + window.location.href);
-              }
+              console.log('Share cancelled or failed:', err);
+              // User cancelled sharing, do nothing
             }
           });
         }
