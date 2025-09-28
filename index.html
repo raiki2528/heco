@@ -46,6 +46,14 @@
             <span class="label">Instagram</span>
           </a>
         </div>
+        <div class="action-buttons">
+          <button class="action-btn share-btn" aria-label="共有">
+            <span class="action-text">共有</span>
+          </button>
+          <button class="action-btn install-btn" aria-label="ホーム画面に追加">
+            <span class="action-text">ホーム画面に追加</span>
+          </button>
+        </div>
       </section>
 
 
@@ -61,6 +69,35 @@
       </section>
 
     </main>
+
+    <!-- Install Instructions Modal -->
+    <div id="install-modal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>ホーム画面に追加する手順</h3>
+          <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="instructions">
+            <h4>【iPhone/iPadの場合】</h4>
+            <ol>
+              <li>Safariでウェブサイトを開く</li>
+              <li>画面下部（または上部）の「共有」アイコンをタップ</li>
+              <li>「ホーム画面に追加」を選択</li>
+              <li>「追加」をタップ</li>
+            </ol>
+            
+            <h4>【Androidの場合 (Chrome)】</h4>
+            <ol>
+              <li>Chromeでウェブサイトを開く</li>
+              <li>右上の「⋮」メニューをタップ</li>
+              <li>「ホーム画面に追加」を選択</li>
+              <li>画面の指示に従い「追加」をタップ</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <footer class="footer">
       <small>© <span id="year"></span> La Bamba satsuma tacos</small>
@@ -237,6 +274,70 @@
           if (e.touches.length === 0) endDrag()
         })
       })()
+      
+      // Share and Install buttons functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const shareBtn = document.querySelector('.share-btn');
+        const installBtn = document.querySelector('.install-btn');
+        const installModal = document.getElementById('install-modal');
+        const modalClose = document.querySelector('.modal-close');
+        
+        // Share functionality
+        if (shareBtn) {
+          shareBtn.addEventListener('click', async () => {
+            const shareData = {
+              title: 'ラ・バンバ 薩摩タコス',
+              text: '美味しいタコスとタコライスが楽しめるテイクアウト専門店です！',
+              url: window.location.href
+            };
+            
+            try {
+              if (navigator.share) {
+                await navigator.share(shareData);
+              } else {
+                // Fallback: copy to clipboard
+                await navigator.clipboard.writeText(window.location.href);
+                alert('URLをコピーしました！');
+              }
+            } catch (err) {
+              console.log('Share failed:', err);
+              // Fallback: copy to clipboard
+              try {
+                await navigator.clipboard.writeText(window.location.href);
+                alert('URLをコピーしました！');
+              } catch (clipboardErr) {
+                alert('共有に失敗しました。URLを手動でコピーしてください: ' + window.location.href);
+              }
+            }
+          });
+        }
+        
+        // Install instructions modal
+        if (installBtn) {
+          installBtn.addEventListener('click', () => {
+            installModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+          });
+        }
+        
+        // Close modal
+        if (modalClose) {
+          modalClose.addEventListener('click', () => {
+            installModal.style.display = 'none';
+            document.body.style.overflow = '';
+          });
+        }
+        
+        // Close modal when clicking outside
+        if (installModal) {
+          installModal.addEventListener('click', (e) => {
+            if (e.target === installModal) {
+              installModal.style.display = 'none';
+              document.body.style.overflow = '';
+            }
+          });
+        }
+      });
     </script>
   <!-- Lightbox overlay container is injected by script -->
   </body>
