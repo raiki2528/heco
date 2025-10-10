@@ -379,10 +379,69 @@
           });
         }
         
-        // Home screen add instructions
+        // PWA Install API implementation
+        let deferredPrompt;
+        let isInstalled = false;
+
+        // Listen for beforeinstallprompt event
+        window.addEventListener('beforeinstallprompt', (e) => {
+          console.log('PWA install prompt available');
+          // Prevent the mini-infobar from appearing on mobile
+          e.preventDefault();
+          // Stash the event so it can be triggered later
+          deferredPrompt = e;
+          // Update UI to notify user they can install
+          updateInstallButton(true);
+        });
+
+        // Listen for appinstalled event
+        window.addEventListener('appinstalled', () => {
+          console.log('PWA was installed');
+          isInstalled = true;
+          updateInstallButton(false);
+          deferredPrompt = null;
+        });
+
+        // Update install button based on PWA install availability
+        function updateInstallButton(showInstall) {
+          if (addToHomeScreenBtn) {
+            if (showInstall && deferredPrompt) {
+              addToHomeScreenBtn.innerHTML = '📱 アプリをインストール';
+              addToHomeScreenBtn.style.display = 'block';
+            } else if (isInstalled) {
+              addToHomeScreenBtn.innerHTML = '✅ インストール済み';
+              addToHomeScreenBtn.style.background = '#28a745';
+              addToHomeScreenBtn.disabled = true;
+            } else {
+              // Fallback for browsers that don't support PWA Install API
+              addToHomeScreenBtn.innerHTML = '📱 ホーム画面に追加';
+              addToHomeScreenBtn.style.display = 'block';
+            }
+          }
+        }
+
+        // Home screen add functionality
         if (addToHomeScreenBtn) {
-          addToHomeScreenBtn.addEventListener('click', () => {
-            alert(`ホーム画面に追加する手順
+          addToHomeScreenBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+              // Show the install prompt
+              deferredPrompt.prompt();
+              
+              // Wait for the user to respond to the prompt
+              const { outcome } = await deferredPrompt.userChoice;
+              
+              if (outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+              } else {
+                console.log('User dismissed the install prompt');
+              }
+              
+              // Clear the deferredPrompt
+              deferredPrompt = null;
+              updateInstallButton(false);
+            } else {
+              // Fallback for browsers that don't support PWA Install API
+              alert(`ホーム画面に追加する手順
 
 【iPhone/iPadの場合】
 Safariでウェブサイトを開く
@@ -395,8 +454,12 @@ Chromeでウェブサイトを開く
 右上の「︙」メニューをタップ
 「ホーム画面に追加」を選択
 画面の指示に従い「追加」をタップ`);
+            }
           });
         }
+
+        // Initialize install button state
+        updateInstallButton(false);
       });
     </script>
   <!-- Lightbox overlay container is injected by script -->

@@ -491,16 +491,33 @@ main.card { flex: 1 0 auto; }
 
 .modal-button-red {
   background: #FF3B30 !important;
+  animation: pulse-install 2s infinite;
 }
 
 .modal-button-red:hover {
   background: #D70015 !important;
   transform: translateY(-1px);
+  animation: none;
 }
 
 .modal-button-red:active {
   transform: translateY(0);
   background: #B50012 !important;
+}
+
+@keyframes pulse-install {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(255, 59, 48, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 59, 48, 0);
+  }
 }
 
 .modal-close-button {
