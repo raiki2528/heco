@@ -106,7 +106,7 @@
         <div class="modal-actions">
           <button id="add-to-home-screen-button" class="modal-button modal-button-red">ホーム画面に追加</button>
           
-          <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AFN:ラ・バンバ 薩摩タコス%0AORG:ラ・バンバ 薩摩タコス%0ATITLE:テイクアウト専門店%0AEMAIL:info@labamba-satsuma.com%0AURL:https://raiki2528.github.io/heco/%0AADR:;;〒899-4332 鹿児島県霧島市国分中央１丁目７−７−２;;;%0AEND:VCARD" download="ラ・バンバ薩摩タコス.vcf" class="modal-button">連絡先に保存</a>
+          <a href="#" id="vcard-download" class="modal-button">連絡先に保存</a>
 
           <a href="mailto:?subject=【ラ・バンバ 薩摩タコス】連絡先&body=ラ・バンバ 薩摩タコスの連絡先です。%0A%0A---%0A店名: ラ・バンバ 薩摩タコス【La Bamba satsuma tacos】%0A住所: 〒899-4332 鹿児島県霧島市国分中央１丁目７−７−２%0A営業時間: 11時30分〜14時00分、17時00分〜18時30分%0A店休日: 日・月%0AInstagram: https://www.instagram.com/la.bamba.satsuma.tacos/%0Aウェブサイト: https://raiki2528.github.io/heco/%0A---" class="modal-button">メールを自分に送信</a>
         </div>
@@ -385,13 +385,29 @@
 
         // Listen for beforeinstallprompt event
         window.addEventListener('beforeinstallprompt', (e) => {
-          console.log('PWA install prompt available');
+          console.log('✅ PWA install prompt available');
           // Prevent the mini-infobar from appearing on mobile
           e.preventDefault();
           // Stash the event so it can be triggered later
           deferredPrompt = e;
           // Update UI to notify user they can install
           updateInstallButton(true);
+        });
+
+        // Debug: Log when PWA install prompt is NOT available
+        window.addEventListener('load', () => {
+          console.log('🔍 PWA Debug Info:');
+          console.log('- HTTPS:', location.protocol === 'https:');
+          console.log('- Service Worker:', 'serviceWorker' in navigator);
+          console.log('- User Agent:', navigator.userAgent);
+          console.log('- Standalone:', window.matchMedia('(display-mode: standalone)').matches);
+          
+          // Check if we're in a PWA already
+          if (window.matchMedia('(display-mode: standalone)').matches) {
+            console.log('📱 Already running as PWA');
+            isInstalled = true;
+            updateInstallButton(false);
+          }
         });
 
         // Listen for appinstalled event
@@ -408,14 +424,26 @@
             if (showInstall && deferredPrompt) {
               addToHomeScreenBtn.innerHTML = '📱 アプリをインストール';
               addToHomeScreenBtn.style.display = 'block';
+              console.log('🎉 Install button ready for PWA install');
             } else if (isInstalled) {
               addToHomeScreenBtn.innerHTML = '✅ インストール済み';
               addToHomeScreenBtn.style.background = '#28a745';
               addToHomeScreenBtn.disabled = true;
+              console.log('✅ PWA already installed');
             } else {
               // Fallback for browsers that don't support PWA Install API
-              addToHomeScreenBtn.innerHTML = '📱 ホーム画面に追加';
+              const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+              const isAndroid = /Android/.test(navigator.userAgent);
+              
+              if (isIOS) {
+                addToHomeScreenBtn.innerHTML = '📱 Safariでホーム画面に追加';
+              } else if (isAndroid) {
+                addToHomeScreenBtn.innerHTML = '📱 Chromeでホーム画面に追加';
+              } else {
+                addToHomeScreenBtn.innerHTML = '📱 ホーム画面に追加';
+              }
               addToHomeScreenBtn.style.display = 'block';
+              console.log('📱 Using fallback method for:', isIOS ? 'iOS' : isAndroid ? 'Android' : 'Other');
             }
           }
         }
@@ -460,6 +488,81 @@ Chromeでウェブサイトを開く
 
         // Initialize install button state
         updateInstallButton(false);
+
+        // vCard download functionality with icon
+        const vcardDownloadBtn = document.getElementById('vcard-download');
+        if (vcardDownloadBtn) {
+          vcardDownloadBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            try {
+              // Fetch the icon image and convert to base64
+              const iconResponse = await fetch('images/Hicoさんアイコン.png');
+              const iconBlob = await iconResponse.blob();
+              const iconBase64 = await blobToBase64(iconBlob);
+              
+              // Create vCard with icon
+              const vcard = `BEGIN:VCARD
+VERSION:3.0
+FN:ラ・バンバ 薩摩タコス
+ORG:ラ・バンバ 薩摩タコス
+TITLE:テイクアウト専門店
+EMAIL:info@labamba-satsuma.com
+URL:https://raiki2528.github.io/heco/
+ADR:;;〒899-4332 鹿児島県霧島市国分中央１丁目７−７−２;;;
+PHOTO;ENCODING=BASE64;TYPE=PNG:${iconBase64}
+END:VCARD`;
+
+              // Create and download the vCard file
+              const blob = new Blob([vcard], { type: 'text/vcard;charset=utf-8' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'ラ・バンバ薩摩タコス.vcf';
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+              
+              console.log('✅ vCard with icon downloaded');
+            } catch (error) {
+              console.error('❌ Error creating vCard:', error);
+              // Fallback without icon
+              const fallbackVcard = `BEGIN:VCARD
+VERSION:3.0
+FN:ラ・バンバ 薩摩タコス
+ORG:ラ・バンバ 薩摩タコス
+TITLE:テイクアウト専門店
+EMAIL:info@labamba-satsuma.com
+URL:https://raiki2528.github.io/heco/
+ADR:;;〒899-4332 鹿児島県霧島市国分中央１丁目７−７−２;;;
+END:VCARD`;
+              
+              const blob = new Blob([fallbackVcard], { type: 'text/vcard;charset=utf-8' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'ラ・バンバ薩摩タコス.vcf';
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+            }
+          });
+        }
+
+        // Helper function to convert blob to base64
+        function blobToBase64(blob) {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+              const base64 = reader.result.split(',')[1];
+              resolve(base64);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+        }
       });
     </script>
   <!-- Lightbox overlay container is injected by script -->
