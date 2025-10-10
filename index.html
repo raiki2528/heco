@@ -50,8 +50,8 @@
           <button class="action-btn share-btn" aria-label="共有">
             <span class="action-text">共有</span>
           </button>
-          <button class="action-btn install-btn" aria-label="ホーム画面に追加">
-            <span class="action-text">ホーム画面に追加</span>
+          <button class="action-btn save-btn" id="open-save-modal-button" aria-label="情報の保存">
+            <span class="action-text">情報の保存</span>
           </button>
         </div>
       </section>
@@ -96,6 +96,21 @@
             </ol>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Save Options Modal -->
+    <div id="save-options-modal" class="modal-overlay" style="display:none;">
+      <div class="modal-content">
+        <p class="modal-title">保存方法を選択</p>
+        <div class="modal-actions">
+          <button id="add-to-home-screen-button" class="modal-button modal-button-red">ホーム画面に追加</button>
+          
+          <a href="data:text/vcard;charset=utf-8,BEGIN:VCARD%0AVERSION:3.0%0AFN:ラ・バンバ 薩摩タコス%0AORG:ラ・バンバ 薩摩タコス%0ATITLE:テイクアウト専門店%0AEMAIL:info@labamba-satsuma.com%0AURL:https://raiki2528.github.io/heco/%0AADR:;;〒899-4332 鹿児島県霧島市国分中央１丁目７−７−２;;;%0AEND:VCARD" download="ラ・バンバ薩摩タコス.vcf" class="modal-button">連絡先に保存</a>
+
+          <a href="mailto:?subject=【ラ・バンバ 薩摩タコス】連絡先&body=ラ・バンバ 薩摩タコスの連絡先です。%0A%0A---%0A店名: ラ・バンバ 薩摩タコス【La Bamba satsuma tacos】%0A住所: 〒899-4332 鹿児島県霧島市国分中央１丁目７−７−２%0A営業時間: 11時30分〜14時00分、17時00分〜18時30分%0A店休日: 日・月%0AInstagram: https://www.instagram.com/la.bamba.satsuma.tacos/%0Aウェブサイト: https://raiki2528.github.io/heco/%0A---" class="modal-button">メールを自分に送信</a>
+        </div>
+        <button id="close-modal-button" class="modal-close-button">戻る</button>
       </div>
     </div>
 
@@ -329,6 +344,57 @@
               installModal.style.display = 'none';
               document.body.style.overflow = '';
             }
+          });
+        }
+        
+        // Save Options Modal functionality
+        const saveModal = document.getElementById('save-options-modal');
+        const openSaveModalBtn = document.getElementById('open-save-modal-button');
+        const closeSaveModalBtn = document.getElementById('close-modal-button');
+        const addToHomeScreenBtn = document.getElementById('add-to-home-screen-button');
+        
+        // Open save modal
+        if (openSaveModalBtn) {
+          openSaveModalBtn.addEventListener('click', () => {
+            saveModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+          });
+        }
+        
+        // Close save modal
+        if (closeSaveModalBtn) {
+          closeSaveModalBtn.addEventListener('click', () => {
+            saveModal.style.display = 'none';
+            document.body.style.overflow = '';
+          });
+        }
+        
+        // Close save modal when clicking outside
+        if (saveModal) {
+          saveModal.addEventListener('click', (e) => {
+            if (e.target === saveModal) {
+              saveModal.style.display = 'none';
+              document.body.style.overflow = '';
+            }
+          });
+        }
+        
+        // Home screen add instructions
+        if (addToHomeScreenBtn) {
+          addToHomeScreenBtn.addEventListener('click', () => {
+            alert(`ホーム画面に追加する手順
+
+【iPhone/iPadの場合】
+Safariでウェブサイトを開く
+画面下部（または上部）の「共有」アイコンをタップ
+「ホーム画面に追加」を選択
+「追加」をタップ
+
+【Androidの場合 (Chrome)】
+Chromeでウェブサイトを開く
+右上の「︙」メニューをタップ
+「ホーム画面に追加」を選択
+画面の指示に従い「追加」をタップ`);
           });
         }
       });
