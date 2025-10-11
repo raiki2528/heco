@@ -32,10 +32,10 @@ body {
   min-height: 200px;
   /* ↓ ヘッダーの背景画像を編集 (例: url('images/header_bg.jpg')) */
   background-image: url('images/Hecoさん背景.png');
-  background-size: contain;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: transparent;
+  background-color: rgba(11,13,18,.8);
   border: none;
   border-radius: 0;
 }
