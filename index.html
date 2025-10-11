@@ -23,27 +23,36 @@
       </div>
     </header>
     <section class="identity-block" aria-label="プロフィール概要">
-      <img class="hero-avatar" src="images/Hicoさんアイコン.png" alt="プロフィール写真">
+      <img class="hero-avatar" src="images/hecoさんアイコン3.png" alt="プロフィール写真">
       <div class="identity-info">
       <p class="identity-title">ラ・バンバ 薩摩タコス【La Bamba satsuma tacos】</p>
       <p class="identity-address">
-        <a href="https://maps.app.goo.gl/XtVJ3CYL8p4XD2XH9" target="_blank" rel="noopener" class="address-link">
+        <a href="https://maps.app.goo.gl/8NKrpBQverxPVEYR6" target="_blank" rel="noopener" class="address-link">
           📍 〒899-4332 鹿児島県霧島市国分中央１丁目７−７−２
         </a>
       </p>
         <p class="identity-subtitle">タコス&タコライス&バーガー<br>
 テイクアウト専門店<br>
 店休日　【日・月】<br>
-<span class="hours-label">営業時間:</span> <span class="hours-times">11時30分〜14時00分<br>17時00分〜18時30分</span></p>
+<span class="hours-label">営業時間:</span> <span class="hours-times">11時30分〜14時00分<br>17時00分〜18時30分</span><br>
+<span class="phone-label">電話番号:</span> <span class="phone-number">08056041331</span><br><br>
+◎La BambaオリジナルTシャツ、缶バッジも販売してます！<br>
+◎デジタルプロフィールカード(Lotus Card)<br>
+<button class="order-btn" onclick="window.open('https://lin.ee/wtDrMdc', '_blank', 'noopener')">注文はこちら</button></p>
       </div>
     </section>
     <main class="card" role="main">
 
       <section class="sns" aria-label="SNS リンク">
+        <p class="tap-instruction">⇩こちらをタップ⇩</p>
         <div class="sns-grid">
           <a class="sns-btn" href="https://www.instagram.com/la.bamba.satsuma.tacos/" target="_blank" rel="noopener" aria-label="Instagram">
             <img src="images/Instagram copy.png" alt="Instagram">
             <span class="label">Instagram</span>
+          </a>
+          <a class="sns-btn" href="https://maps.app.goo.gl/8NKrpBQverxPVEYR6" target="_blank" rel="noopener" aria-label="Google Maps">
+            <img src="images/google-maps-new.png" alt="Google Maps">
+            <span class="label">Google Maps</span>
           </a>
         </div>
         <div class="action-buttons">
@@ -59,12 +68,13 @@
 
       <section class="gallery" aria-label="フォトギャラリー">
         <div class="gallery-grid">
-          <img src="images/IMG_2802.jpg" alt="IMG_2802">
           <img src="images/IMG_2804.JPG" alt="IMG_2804">
           <img src="images/IMG_2805.JPG" alt="IMG_2805">
           <img src="images/IMG_2806.JPG" alt="IMG_2806">
-          <img src="images/IMG_2807.JPG" alt="IMG_2807">
           <img src="images/IMG_2809.JPG" alt="IMG_2809">
+          <img src="images/hecoさんTシャツ1.jpg" alt="hecoさんTシャツ1">
+          <img src="images/hecoさんTシャツ2.jpg" alt="hecoさんTシャツ2">
+          <img src="images/Hecoさん缶バッジ.jpg" alt="Hecoさん缶バッジ">
         </div>
       </section>
 
@@ -404,11 +414,17 @@
             // Always show instructions regardless of PWA Install API support
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
             const isAndroid = /Android/.test(navigator.userAgent);
+            const isMac = /Mac/.test(navigator.userAgent);
+            const isWindows = /Windows/.test(navigator.userAgent);
             
             if (isIOS) {
               showIOSInstructions();
             } else if (isAndroid) {
               showAndroidInstructions();
+            } else if (isMac) {
+              showMacInstructions();
+            } else if (isWindows) {
+              showWindowsInstructions();
             } else {
               showGenericInstructions();
             }
@@ -426,7 +442,7 @@
             
             try {
               // Fetch the icon image and convert to base64
-              const iconResponse = await fetch('images/Hicoさんアイコン.png');
+              const iconResponse = await fetch('images/hecoさんアイコン3.png');
               const iconBlob = await iconResponse.blob();
               const iconBase64 = await blobToBase64(iconBlob);
               
@@ -513,6 +529,40 @@ END:VCARD`;
 3️⃣ 「追加」をタップして完了！
 
 ※ Chromeで開いていることを確認してください`);
+        }
+
+        // Mac specific instructions
+        function showMacInstructions() {
+          alert(`💻 Macでホーム画面に追加する手順
+
+【Chromeの場合】
+1. アドレスバー右端の「インストール」アイコンをクリック
+2. 「インストール」をクリック
+
+【Safariの場合】
+1. メニューバーの「開発」→「Webインスペクタ」を開く
+2. デバイスモードに切り替えてテスト
+
+【その他のブラウザ】
+1. メニューから「アプリとしてインストール」を探す
+2. または、ブックマークとして保存`);
+        }
+
+        // Windows specific instructions
+        function showWindowsInstructions() {
+          alert(`💻 Windowsでホーム画面に追加する手順
+
+【Chromeの場合】
+1. アドレスバー右端の「インストール」アイコンをクリック
+2. 「インストール」をクリック
+
+【Edgeの場合】
+1. メニュー（⋯）→「アプリ」→「このサイトをアプリとしてインストール」
+2. 「インストール」をクリック
+
+【その他のブラウザ】
+1. メニューから「アプリとしてインストール」を探す
+2. または、ブックマークとして保存`);
         }
 
         // Generic instructions for other browsers

@@ -30,8 +30,8 @@ body {
   width: calc(100% - (var(--page-pad) * 2));
   margin: 0 auto;
   /* ↓ ヘッダーの背景画像を編集 (例: url('images/header_bg.jpg')) */
-  background: url('images/hecoさん背景6.png') center/contain no-repeat, linear-gradient(180deg, rgba(11,13,18,.3), rgba(11,13,18,.5));
-  border: 3px solid rgba(255,255,255,.08);
+  background: url('images/Hecoさん背景.png') center/cover no-repeat, linear-gradient(180deg, rgba(11,13,18,.3), rgba(11,13,18,.5));
+  border: none;
   border-radius: 24px;
 }
 .hero-inner {
@@ -90,6 +90,18 @@ body {
   text-decoration: underline;
 }
 
+.line-link {
+  color: #00C300;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.line-link:hover {
+  color: #00A300;
+  text-decoration: underline;
+}
+
 .hours-label {
   display: inline-block;
   min-width: 60px;
@@ -99,6 +111,44 @@ body {
 .hours-times {
   display: inline-block;
   vertical-align: top;
+}
+
+.phone-label {
+  display: inline-block;
+  min-width: 60px;
+  vertical-align: top;
+  font-weight: 500;
+}
+
+.phone-number {
+  display: inline-block;
+  vertical-align: top;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.order-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  font-family: inherit;
+}
+
+.order-btn:hover {
+  background: #5a9bff;
+  transform: translateY(-1px);
+}
+
+.order-btn:active {
+  transform: translateY(0);
+  background: #4a8bff;
 }
 
 .card {
@@ -136,6 +186,13 @@ main.card { flex: 1 0 auto; }
 
 /* SNS grid */
 .sns { margin: 18px auto 0; max-width: 640px; padding: 0 var(--page-pad); }
+.tap-instruction {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0 0 16px 0;
+  font-weight: 500;
+}
 .sns-grid {
   display: flex;
   justify-content: center;
