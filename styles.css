@@ -31,7 +31,7 @@ body {
   margin: 0 auto;
   min-height: 200px;
   /* ↓ ヘッダーの背景画像を編集 (例: url('images/header_bg.jpg')) */
-  background-image: url('images/Hecoさん背景.png');
+  background-image: url('./images/hecoさん背景.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
