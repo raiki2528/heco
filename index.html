@@ -379,126 +379,38 @@
           });
         }
         
-        // PWA Install API implementation
-        let deferredPrompt;
-        let isInstalled = false;
-
-        // Listen for beforeinstallprompt event
-        window.addEventListener('beforeinstallprompt', (e) => {
-          console.log('✅ PWA install prompt available');
-          // Prevent the mini-infobar from appearing on mobile
-          e.preventDefault();
-          // Stash the event so it can be triggered later
-          deferredPrompt = e;
-          // Update UI to notify user they can install
-          updateInstallButton(true);
-        });
-
-        // Debug: Log when PWA install prompt is NOT available
+        // Simple PWA detection for debugging
         window.addEventListener('load', () => {
           console.log('🔍 PWA Debug Info:');
           console.log('- HTTPS:', location.protocol === 'https:');
           console.log('- Service Worker:', 'serviceWorker' in navigator);
           console.log('- User Agent:', navigator.userAgent);
           console.log('- Standalone:', window.matchMedia('(display-mode: standalone)').matches);
-          
-          // Check if we're in a PWA already
-          if (window.matchMedia('(display-mode: standalone)').matches) {
-            console.log('📱 Already running as PWA');
-            isInstalled = true;
-            updateInstallButton(false);
-          }
         });
 
-        // Listen for appinstalled event
-        window.addEventListener('appinstalled', () => {
-          console.log('PWA was installed');
-          isInstalled = true;
-          updateInstallButton(false);
-          deferredPrompt = null;
-        });
-
-        // Update install button based on PWA install availability
+        // Update install button - Simple display only
         function updateInstallButton(showInstall) {
           if (addToHomeScreenBtn) {
-            if (showInstall && deferredPrompt) {
-              addToHomeScreenBtn.innerHTML = '📱 アプリをインストール';
-              addToHomeScreenBtn.style.display = 'block';
-              console.log('🎉 Install button ready for PWA install');
-            } else if (isInstalled) {
-              addToHomeScreenBtn.innerHTML = '✅ インストール済み';
-              addToHomeScreenBtn.style.background = '#28a745';
-              addToHomeScreenBtn.disabled = true;
-              console.log('✅ PWA already installed');
-            } else {
-              // Fallback for browsers that don't support PWA Install API
-              const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-              const isAndroid = /Android/.test(navigator.userAgent);
-              
-              if (isIOS) {
-                addToHomeScreenBtn.innerHTML = '📱 Safariでホーム画面に追加';
-              } else if (isAndroid) {
-                addToHomeScreenBtn.innerHTML = '📱 Chromeでホーム画面に追加';
-              } else {
-                addToHomeScreenBtn.innerHTML = '📱 ホーム画面に追加';
-              }
-              addToHomeScreenBtn.style.display = 'block';
-              console.log('📱 Using fallback method for:', isIOS ? 'iOS' : isAndroid ? 'Android' : 'Other');
-            }
+            // Always show simple text regardless of PWA support
+            addToHomeScreenBtn.innerHTML = '📱 ホーム画面に追加';
+            addToHomeScreenBtn.style.display = 'block';
+            console.log('📱 Home screen add button ready (simple mode)');
           }
         }
 
-        // Home screen add functionality
+        // Home screen add functionality - Simple text display only
         if (addToHomeScreenBtn) {
-          addToHomeScreenBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-              // Show the install prompt
-              deferredPrompt.prompt();
-              
-              // Wait for the user to respond to the prompt
-              const { outcome } = await deferredPrompt.userChoice;
-              
-              if (outcome === 'accepted') {
-                console.log('User accepted the install prompt');
-              } else {
-                console.log('User dismissed the install prompt');
-              }
-              
-              // Clear the deferredPrompt
-              deferredPrompt = null;
-              updateInstallButton(false);
+          addToHomeScreenBtn.addEventListener('click', () => {
+            // Always show instructions regardless of PWA Install API support
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            const isAndroid = /Android/.test(navigator.userAgent);
+            
+            if (isIOS) {
+              showIOSInstructions();
+            } else if (isAndroid) {
+              showAndroidInstructions();
             } else {
-              // Fallback for browsers that don't support PWA Install API
-              const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-              const isAndroid = /Android/.test(navigator.userAgent);
-              
-              if (isIOS) {
-                // iOS: Try to use Web Share API or show instructions
-                if (navigator.share) {
-                  try {
-                    await navigator.share({
-                      title: 'ラ・バンバ 薩摩タコス',
-                      text: '美味しいタコスとタコライスが楽しめるテイクアウト専門店',
-                      url: window.location.href
-                    });
-                    // After sharing, show instruction to add to home screen
-                    setTimeout(() => {
-                      showIOSInstructions();
-                    }, 1000);
-                  } catch (error) {
-                    console.log('Share cancelled or failed:', error);
-                    showIOSInstructions();
-                  }
-                } else {
-                  showIOSInstructions();
-                }
-              } else if (isAndroid) {
-                // Android: Show instructions for Chrome
-                showAndroidInstructions();
-              } else {
-                // Other browsers
-                showGenericInstructions();
-              }
+              showGenericInstructions();
             }
           });
         }
