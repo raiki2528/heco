@@ -469,19 +469,36 @@
               updateInstallButton(false);
             } else {
               // Fallback for browsers that don't support PWA Install API
-              alert(`ホーム画面に追加する手順
-
-【iPhone/iPadの場合】
-Safariでウェブサイトを開く
-画面下部（または上部）の「共有」アイコンをタップ
-「ホーム画面に追加」を選択
-「追加」をタップ
-
-【Androidの場合 (Chrome)】
-Chromeでウェブサイトを開く
-右上の「︙」メニューをタップ
-「ホーム画面に追加」を選択
-画面の指示に従い「追加」をタップ`);
+              const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+              const isAndroid = /Android/.test(navigator.userAgent);
+              
+              if (isIOS) {
+                // iOS: Try to use Web Share API or show instructions
+                if (navigator.share) {
+                  try {
+                    await navigator.share({
+                      title: 'ラ・バンバ 薩摩タコス',
+                      text: '美味しいタコスとタコライスが楽しめるテイクアウト専門店',
+                      url: window.location.href
+                    });
+                    // After sharing, show instruction to add to home screen
+                    setTimeout(() => {
+                      showIOSInstructions();
+                    }, 1000);
+                  } catch (error) {
+                    console.log('Share cancelled or failed:', error);
+                    showIOSInstructions();
+                  }
+                } else {
+                  showIOSInstructions();
+                }
+              } else if (isAndroid) {
+                // Android: Show instructions for Chrome
+                showAndroidInstructions();
+              } else {
+                // Other browsers
+                showGenericInstructions();
+              }
             }
           });
         }
@@ -562,6 +579,45 @@ END:VCARD`;
             reader.onerror = reject;
             reader.readAsDataURL(blob);
           });
+        }
+
+        // iOS specific instructions
+        function showIOSInstructions() {
+          alert(`📱 iPhone/iPadでホーム画面に追加する手順
+
+1️⃣ 画面下部の「共有」ボタンをタップ
+2️⃣ 下にスクロールして「ホーム画面に追加」をタップ
+3️⃣ 「追加」をタップして完了！
+
+※ Safariで開いていることを確認してください`);
+        }
+
+        // Android specific instructions
+        function showAndroidInstructions() {
+          alert(`📱 Androidでホーム画面に追加する手順
+
+1️⃣ 右上の「⋮」メニューをタップ
+2️⃣ 「ホーム画面に追加」を選択
+3️⃣ 「追加」をタップして完了！
+
+※ Chromeで開いていることを確認してください`);
+        }
+
+        // Generic instructions for other browsers
+        function showGenericInstructions() {
+          alert(`📱 ホーム画面に追加する手順
+
+【iPhone/iPadの場合】
+1. Safariでウェブサイトを開く
+2. 画面下部（または上部）の「共有」アイコンをタップ
+3. 「ホーム画面に追加」を選択
+4. 「追加」をタップ
+
+【Androidの場合】
+1. Chromeでウェブサイトを開く
+2. 右上の「⋮」メニューをタップ
+3. 「ホーム画面に追加」を選択
+4. 画面の指示に従い「追加」をタップ`);
         }
       });
     </script>
